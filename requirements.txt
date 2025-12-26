@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+numpy
+opencv-python-headless
+onnxruntime           # Use onnxruntime-gpu if you have a GPU
+insightface>=0.7.3
+inspireface
+typing-extensions
