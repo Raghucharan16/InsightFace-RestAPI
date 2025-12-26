@@ -26,7 +26,9 @@ jobs:
     - name: Install System Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
+        sudo apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev
+        # libgl1-mesa-glx is not available in Ubuntu Noble, use libgl1 instead
+        sudo apt-get install -y libgl1
 
     # 4. Install Python Requirements
     - name: Install Python Dependencies
