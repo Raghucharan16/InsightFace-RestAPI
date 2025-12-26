@@ -3,7 +3,8 @@ uvicorn
 python-multipart
 numpy
 opencv-python-headless
-onnxruntime           # Use onnxruntime-gpu if you have a GPU
+onnxruntime
 insightface>=0.7.3
-inspireface
 typing-extensions
+# inspireface - Only available on Linux (used in GitHub Actions)
+# Install separately: pip install inspireface

@@ -1,0 +1,5 @@
+# Requirements for GitHub Actions (Linux environment)
+# These include packages that are Linux-only or have better support on Linux
+
+-r requirements.txt
+inspireface  # Only available on Linux
