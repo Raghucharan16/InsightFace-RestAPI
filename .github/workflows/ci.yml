@@ -1,0 +1,89 @@
+name: Build & Test API
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-cpu:
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 1. Checkout Code
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # 2. Set up Python
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+        cache: 'pip' # Caches pip packages automatically
+
+    # 3. Install Linux System Deps (Required for OpenCV & ONNX)
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgl1-mesa-glx libglib2.0-0 libsm6 libxext6 libxrender-dev
+
+    # 4. Install Python Requirements
+    - name: Install Python Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # Install test dependencies
+        pip install pytest httpx
+
+    # 5. Cache Models (Crucial Step)
+    # This checks if 'models/' already exists in cache. 
+    # If yes, it restores it. If no, the next step runs.
+    - name: Cache InsightFace Models
+      id: cache-models
+      uses: actions/cache@v3
+      with:
+        path: models/
+        # Update 'v1' to 'v2' if you change the download script to force a refresh
+        key: ${{ runner.os }}-insightface-models-v1
+
+    # 6. Download Models (Only runs if cache missed)
+    - name: Download Models
+      if: steps.cache-models.outputs.cache-hit != 'true'
+      run: |
+        python scripts/download_models.py
+        # List files to verify download
+        ls -R models/
+
+    # 7. Run Tests
+    # We assume you have a 'tests/' folder. 
+    # If not, we run a simple import check to ensure engines don't crash.
+    - name: Test API Import & Engine Init
+      run: |
+        # This simple one-liner tries to load your main app. 
+        # If dependencies or models are missing, this will fail.
+        python -c "from app.main import app; print('API initialized successfully')"
+        
+        # If you have real tests:
+        # pytest tests/
+
+  # Optional: Build Docker Image only if tests pass
+  build-docker:
+    needs: test-cpu
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false # Set to true if you add Docker Hub credentials
+          tags: insightface-api:latest
+          # We don't cache models inside the docker build here to keep it simple,
+          # but usually you would COPY models/ into the container.
