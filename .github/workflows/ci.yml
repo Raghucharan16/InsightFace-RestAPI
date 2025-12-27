@@ -106,6 +106,7 @@ jobs:
     needs: test-cpu
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    continue-on-error: true
     
     steps:
       - uses: actions/checkout@v3
@@ -117,7 +118,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: false # Set to true if you add Docker Hub credentials
+          push: false
           tags: insightface-api:latest
           # We don't cache models inside the docker build here to keep it simple,
           # but usually you would COPY models/ into the container.

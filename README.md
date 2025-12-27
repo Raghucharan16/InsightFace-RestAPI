@@ -183,11 +183,44 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 ### Docker
 
-Build and run:
+#### Quick Start with Docker Compose
 
 ```bash
+# Build and start the API with Docker Compose
+docker-compose up --build
+
+# API will be available at http://localhost:8000
+# Swagger docs: http://localhost:8000/docs
+```
+
+#### Manual Docker Build & Run
+
+```bash
+# Build the image
 docker build -t insightface-api:latest .
-docker run -p 8000:8000 insightface-api:latest
+
+# Run the container
+docker run -p 8000:8000 \
+  -v $(pwd)/models:/app/models \
+  insightface-api:latest
+```
+
+**Health Check:**
+```bash
+curl http://localhost:8000/health
+```
+
+Expected response:
+```json
+{
+  "status": "healthy",
+  "service": "InsightFace REST API",
+  "models": {
+    "detector": "loaded",
+    "recognizer": "loaded",
+    "swapper": "lazy-loaded"
+  }
+}
 ```
 
 ### GitHub Actions

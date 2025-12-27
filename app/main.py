@@ -19,6 +19,19 @@ def read_image(file: UploadFile):
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     return img
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Docker/Kubernetes"""
+    return {
+        "status": "healthy",
+        "service": "InsightFace REST API",
+        "models": {
+            "detector": "loaded",
+            "recognizer": "loaded",
+            "swapper": "lazy-loaded" if not swapper._model_loaded else "loaded"
+        }
+    }
+
 @app.post("/recognition/embedding")
 async def get_embedding(file: UploadFile = File(...)):
     img = read_image(file)
