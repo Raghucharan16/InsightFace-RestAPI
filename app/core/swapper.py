@@ -9,17 +9,21 @@ from app.core.base import FacialRecognition
 class FaceSwapper(FacialRecognition):
     def __init__(self) -> None:
         self.model = None
-        self.load_model()
+        self._model_loaded = False
+        self.model_file = "inswapper_128.onnx"
+        self.url = "https://huggingface.co/deepinsight/inswapper/resolve/main/inswapper_128.onnx"
 
     def load_model(self) -> None:
-        model_file = "inswapper_128.onnx"
-        # Direct Google Drive Link or mirror for inswapper
-        url = "https://huggingface.co/deepinsight/inswapper/resolve/main/inswapper_128.onnx"
+        """Load model on demand (lazy loading)"""
+        if self._model_loaded:
+            return
         
-        weights_path = download_weights_if_necessary(model_file, url)
-        
-        self.model = get_model(weights_path, providers=['CPUExecutionProvider'])
-        # Swapper doesn't need explicit prepare with size, it handles 128x128 internally
+        try:
+            weights_path = download_weights_if_necessary(self.model_file, self.url)
+            self.model = get_model(weights_path, providers=['CPUExecutionProvider'])
+            self._model_loaded = True
+        except Exception as e:
+            raise RuntimeError(f"Failed to load FaceSwapper model: {e}")
 
     def forward(self, img: Any) -> Any:
         # Not used in swapper standard flow
@@ -31,6 +35,10 @@ class FaceSwapper(FacialRecognition):
         target_img: CV2 image (numpy array)
         target_face: InsightFace object of target (must have kps)
         """
+        # Ensure model is loaded before swapping
+        if not self._model_loaded:
+            self.load_model()
+        
         # Execute swap
         res_img = self.model.get(target_img, target_face, source_face, paste_back=True)
         return res_img

@@ -87,26 +87,19 @@ jobs:
 
     # 7. Run Tests (Only if models exist)
     - name: Test API Import & Engine Init
-      if: steps.check-models.outputs.models-exist == 'true'
       run: |
         # This simple one-liner tries to load your main app. 
-        # If dependencies or models are missing, this will fail.
-        python -c "from app.main import app; print('API initialized successfully')"
+        # With lazy loading, models won't be downloaded on import anymore.
+        python -c "from app.main import app; print('✓ API initialized successfully')"
         
         # If you have real tests:
         # pytest tests/
 
-    # 7b. Skip Tests if models don't exist
-    - name: Skip Tests (Models unavailable)
-      if: steps.check-models.outputs.models-exist == 'false'
-      run: |
-        echo "⚠️  Models could not be downloaded from external sources."
-        echo "📌 To use this workflow, you need to:"
-        echo "   1. Download models locally: python scripts/download_models.py"
-        echo "   2. Commit the 'models/' directory OR"
-        echo "   3. Use GitHub Artifacts to upload pre-downloaded models"
-        echo ""
-        echo "Skipping API tests for now..."
+    # 7b. Pre-download swap model (optional, for faster API startup)
+    - name: Pre-download Swap Models (Optional)
+      if: always()
+      continue-on-error: true
+      run: python -c "from app.core.swapper import FaceSwapper; swapper = FaceSwapper(); swapper.load_model(); print('Swap model pre-loaded')" || echo "⚠ Swap model pre-load skipped (optional)"
 
   # Optional: Build Docker Image only if tests pass
   build-docker:
