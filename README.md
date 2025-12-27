@@ -126,6 +126,20 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`):
 
 Models are cached automatically, so subsequent runs are much faster.
 
+### Lazy Loading
+
+The API uses **lazy loading** for the face swapping model:
+
+- **Buffalo_L detector & recognizer**: Loaded eagerly (small, ~100MB)
+- **InSwapper model**: Loaded on first use (large, ~530MB)
+
+This allows the API to start immediately even if the swap model isn't downloaded yet. The model will be downloaded on-demand when the `/swap` endpoint is first called.
+
+**Benefits:**
+- Faster API startup
+- Better compatibility with GitHub Actions CI
+- Graceful degradation if model download fails
+
 ## Platform Support
 
 | Feature | Windows | Linux/GitHub Actions |
