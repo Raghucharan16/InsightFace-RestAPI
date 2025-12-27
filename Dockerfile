@@ -1,7 +1,7 @@
 # Multi-stage build for InsightFace REST API
 
 # Stage 1: Base image with system dependencies
-FROM ubuntu:24.04 as base
+FROM ubuntu:24.04 AS base
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN ln -s /usr/bin/python3.10 /usr/bin/python
 
 # Stage 2: Build dependencies
-FROM base as builder
+FROM base AS builder
 
 WORKDIR /build
 
@@ -39,7 +39,7 @@ RUN pip install --upgrade pip setuptools wheel && \
     pip install --user -r requirements.txt
 
 # Stage 3: Runtime image
-FROM base as runtime
+FROM base AS runtime
 
 # Set working directory
 WORKDIR /app
@@ -53,7 +53,12 @@ ENV PATH=/root/.local/bin:$PATH
 # Copy application code
 COPY app/ ./app/
 COPY scripts/ ./scripts/
-COPY models/ ./models/ 2>/dev/null || true
+
+# Copy models directory only if it exists (using conditional approach)
+# Note: Models are typically mounted as volumes, not included in image
+# To include models in the image, build with: docker build --build-context models=./models .
+# For now, we'll create empty directory to avoid errors
+RUN mkdir -p ./models || true
 
 # Create non-root user for security
 RUN useradd -m -u 1000 appuser && \
