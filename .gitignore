@@ -17,7 +17,6 @@ temp/
 .DS_Store
 
 # Model files (downloaded locally, cached in GitHub Actions)
-models/*.onnx
 models/buffalo_l/
 models/pikachu/
 models/megatron/
