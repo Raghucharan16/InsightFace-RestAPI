@@ -6,6 +6,7 @@ def process_video(
     video_path,
     output_path,
     swapper,
+    enhancer,
     target_img
 ):
     cap = cv2.VideoCapture(video_path)
@@ -28,6 +29,7 @@ def process_video(
 
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         swapped = swapper.swap_faces(frame_rgb, target_img)
+        swapped = enhancer.enhance_face(swapped)
         swapped_bgr = cv2.cvtColor(swapped, cv2.COLOR_RGB2BGR)
 
         out.write(swapped_bgr)

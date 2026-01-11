@@ -2,6 +2,10 @@ __pycache__
 *.pyc
 .env
 env/
+venv/
+*.exe
+temp/
+*.pth
 .vscode/
 .DS_Store
 
