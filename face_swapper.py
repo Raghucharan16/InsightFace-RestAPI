@@ -15,7 +15,12 @@ class FaceSwapper:
             download=False
         )
 
+    def _import_cv2():
+        import cv2
+        return cv2
+    
     def load_image(self, path):
+        cv2 = self._import_cv2()
         img = cv2.imread(path)
         return cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -46,8 +51,13 @@ class FaceEnhancer:
     def __init__(self):
         os.makedirs("temp/codeformer", exist_ok=True)
 
+    def _import_cv2():
+        import cv2
+        return cv2
+
     def enhance(self, img_rgb, fidelity=0.7):
         # Convert to BGR
+        cv2 = self._import_cv2()
         img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)
 
         # Write temp input
