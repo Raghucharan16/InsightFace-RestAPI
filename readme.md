@@ -1,10 +1,10 @@
-# InsightFace RestAPI + Gradio Demo
+# InsightFace RestAPI + Streamlit Demo
 
 This repository implements a **face swap & restoration web app** based on:
 
 - **InsightFace** for face detection and 128×128 face swapping (inswapper)
 - **CodeFormer** for face restoration/enhancement
-- **Gradio** UI for interactive deployment
+- **Streamlit** UI for interactive deployment
 - Works on **Local Streamlit**
 
 ---
@@ -84,4 +84,9 @@ Start the Streamlit app:
 
 ```
 streamlit run app.py
+```
+
+## Check this Huggingface Space if you don't want to setup:)
+```
+https://huggingface.co/spaces/VenkataRaghuCharan/FaceSwap
 ```
