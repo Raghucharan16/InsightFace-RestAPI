@@ -33,7 +33,7 @@ This repository implements a **face swap & restoration web app** based on:
 ---
 
 ## 📁 Repo Structure
-
+```
 InsightFace-RestAPI/
 ├── app.py # Gradio app entrypoint
 ├── face_swapper.py # Face swap + enhancer logic
@@ -43,11 +43,9 @@ InsightFace-RestAPI/
 ├── checkpoints/
 │ └── inswapper_128.onnx # ONNX model for face swap
 ├── CodeFormer/ # CodeFormer model & weights
-│ └── CodeFormer/weights/
+  └── CodeFormer/weights/
 
-yaml
-Copy code
-
+```
 ---
 
 ## 🚀 Quick Start
@@ -57,42 +55,33 @@ Copy code
 ```bash
 git clone https://github.com/Raghucharan16/InsightFace-RestAPI.git
 cd InsightFace-RestAPI
+```
 2. Install Dependencies
-bash
-Copy code
+```
 pip install -r requirements.txt
+```
 3. Download Models
 You need the following models:
 
 ✔ InsightFace (inswapper)
-Create folder:
 
-bash
-Copy code
-mkdir -p checkpoints
-Download:
-
-Copy code
 inswapper_128.onnx
 Place inside:
-
-bash
-Copy code
-checkpoints/inswapper_128.onnx
+```
+models/inswapper_128.onnx
+```
 ✔ CodeFormer (weights)
 Download and place:
-
-swift
-Copy code
+```
 CodeFormer/CodeFormer/weights/CodeFormer/codeformer.pth
 CodeFormer/CodeFormer/weights/facelib/detection_Resnet50_Final.pth
 CodeFormer/CodeFormer/weights/facelib/parsing_parsenet.pth
 CodeFormer/CodeFormer/weights/realesrgan/RealESRGAN_x2plus.pth
 Tip: Use Git LFS for these weight files if pushing to GitHub.
-
+```
 💻 How to Run Locally
 Start the Streamlit app:
 
-bash
-Copy code
-python app.py
+```
+streamlit run app.py
+```
